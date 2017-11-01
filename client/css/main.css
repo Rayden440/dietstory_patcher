@@ -1,0 +1,17 @@
+.navbar-fixed {
+	position: absolute;
+	z-index: 999999999;
+}
+
+i.icon-purple {
+	color: #5e35b1;
+}
+
+#dev-login-modal {
+	width: 55% !important;
+	max-width: 500px !important;
+}
+
+#dev-login-modal-divider {
+	margin-bottom: 10px !important;
+}

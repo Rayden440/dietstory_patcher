@@ -1,0 +1,1 @@
+Put your private key (key.pem) and certificate (cert.pem) in this folder if using HTTPS.

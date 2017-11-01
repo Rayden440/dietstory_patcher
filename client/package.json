@@ -1,0 +1,16 @@
+{
+  "name": "dietstory_patcher",
+  "version": "1.0.0",
+  "description": "Desktop application to patch DietStory.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Kevin",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^1.7.9",
+    "hammerjs": "^2.0.8",
+    "jquery": "2.2.4"
+  }
+}
