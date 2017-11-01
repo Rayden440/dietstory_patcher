@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kevin",
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rayden440/dietstory_patcher.git"
+  },
   "license": "MIT",
   "dependencies": {
     "async": "^2.5.0",
