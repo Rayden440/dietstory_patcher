@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const fs = require('fs');
 const https = require('https');
 const dotenv = require('dotenv');
@@ -14,6 +15,10 @@ pool.createPool(process.env);
 
 // TESTING CONNECTION WITH DATABASE
 pool.testConnection();
+
+// USING body-parser TO PARSE POST DATA
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 // LOADS /routes/index.js WHICH HOLDS ALL OF OUR ROUTES
 app.use(routes);

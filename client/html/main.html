@@ -35,48 +35,46 @@
 		<br><br>
 		<h2>Patcher Here</h2>
 		<p>TODO: Make look good</p>
+	</div>
+	<!-- /.container -->
 
 
 
-		<a href="#dev-login-modal" class="btn modal-trigger">Hello</a>
-		<div id="dev-login-modal" class="modal">
-			<div class="modal-content">
-				<h5 class="center-align">Developer Login</h5>
-				<div class="divider" id="dev-login-modal-divider"></div>
-				<div class="row">
-					<form class="col s12">
-						<div class="row">
-							<div class="input-field col s10 offset-s1">
-								<input type="text" id="dev-login-username">
-								<label for="dev-login-username">Username</label>
-							</div>
+
+	<!-- MODALS BELOW -->
+	<div id="dev-login-modal" class="modal login-modal-size">
+		<div class="modal-content">
+			<h5 class="center-align">Developer Login</h5>
+			<div class="divider login-modal-divider"></div>
+			<div class="row">
+				<form class="col s12">
+					<div class="row">
+						<div class="input-field col s10 offset-s1">
+							<input type="text" id="dev-login-username">
+							<label for="dev-login-username">Username</label>
 						</div>
-						<div class="row">
-							<div class="input-field col s10 offset-s1">
-								<input type="password" id="dev-login-password">
-								<label for="dev-login-password">Password</label>
-							</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s10 offset-s1">
+							<input type="password" id="dev-login-password">
+							<label for="dev-login-password">Password</label>
 						</div>
-					</form>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-			<div class="modal-footer">
-				<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Login</a>
+					</div>
+				</form>
 			</div>
 		</div>
-		<!-- /.modal -->
+		<!-- /.modal-content -->
+		<div class="modal-footer">
+			<button class="modal-action modal-close waves-effect waves-green btn-flat" type="button" onclick="devLogin()">Login</button>
+		</div>
 	</div>
+	<!-- /.modal -->
 
 
 
-	<!--Import Hammer.js-->
-	<script>window.Hammer = require('hammerjs');</script>
-	<!--Import jQuery-->
-	<script>window.$ = window.jQuery = require('jquery');</script>
-	<!--Import materialize.js-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 	<!--Import custom js-->
 	<script type="text/javascript" src="../js/main-view.js"></script>
+	<!--Import materialize.js-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 </body>
 </html>

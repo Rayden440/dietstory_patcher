@@ -1,8 +1,14 @@
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
+const dotenv = require('dotenv');
+const request = require('request');
 
-const {app, BrowserWindow, Menu} = electron;
+// LOADS ENVIRONMENT VARIABLES
+dotenv.config();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED="0";
+
+const {app, BrowserWindow, Menu, ipcMain} = electron;
 
 let mainWindow;
 
@@ -22,6 +28,28 @@ app.on('ready', function(){
 		slashes: true
 	}));
 
-	// REMOVING MENU BAR
-	Menu.setApplicationMenu(null);
+	// CLOSE APP WHEN mainWindow IS CLOSED - PREVENTS DANGLING WINDOWS
+	mainWindow.on('closed', function(){
+		app.quit();
+	});
+
+	// REMOVING MENU BAR IF IN PRODUCTION MODE
+	if(process.env.ELECTRON_MODE === 'prod')
+		Menu.setApplicationMenu(null);
+});
+
+
+// HANDLES login:dev FROM ipcRenderer
+ipcMain.on('login:dev', function(event, credentials){
+
+	let options = {
+		url: process.env.DS_WEB_SERVER_HOME +'/login/devs',
+		method: 'POST',
+		form: credentials
+	}
+
+	// POSTING TO SERVER
+	request(options, function(err, res, body){
+		// TODO: HANDLE RESPONSE FROM SERVER
+	});
 });
