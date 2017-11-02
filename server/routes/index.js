@@ -8,10 +8,10 @@ router.get('/', function(req, res, appNext){
 });
 
 // ROUTE FOR LASTEST FILE VERSIONS
-router.use('/latest-files', require('./latest-files'));
+router.use('/', require('./latest-files'));
 
 // ROUTE FOR LOGIN
-router.use('/login', require('./login'));
+router.use('/', require('./login'));
 
 
 
