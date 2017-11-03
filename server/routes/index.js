@@ -24,4 +24,8 @@ router.get('*', function(req, res, appNext){
 	res.status(404).send('What you\'re looking for does not exist.');
 });
 
+router.post('*', function(req, res, appNext){
+	res.status(404).send('Not found.');
+});
+
 module.exports = router;

@@ -44,7 +44,7 @@ function query(path, params, callback){
 
 		// EXECUTE QUERY
 		function(con, data, next){
-			if(params.length > 0){
+			if(params == null || params.length == 0){
 				con.query(data, function(err, results, fields){
 					con.release();
 

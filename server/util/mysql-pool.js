@@ -1,22 +1,24 @@
 const mysql = require('mysql');
+const dotenv = require('dotenv');
 
+dotenv.config();
 
 var pool = null;
 
-function createPool(env){
+function createPool(){
 	pool = mysql.createPool({
-		connectionLimit: parseInt(env.DB_CONNECTION_LIMIT),
-		host: env.DB_HOSTNAME,
-		port: parseInt(env.DB_PORT),
-		user: env.DB_USERNAME,
-		password: env.DB_PASSWORD,
-		database: env.DB_NAME
+		connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT),
+		host: process.env.DB_HOSTNAME,
+		port: parseInt(process.env.DB_PORT),
+		user: process.env.DB_USERNAME,
+		password: process.env.DB_PASSWORD,
+		database: process.env.DB_NAME
 	});
 }
 
 function getConnection(callback){
 	if(pool == null){
-		var err = new Error('Connection pool has not been created yet.');
+		var err = new Error('Connection pool has yet to be created.');
 		Error.captureStackTrace(err);
 
 		callback(err, null)

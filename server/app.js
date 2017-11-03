@@ -10,10 +10,8 @@ const pool = require('./util/mysql-pool');
 // LOADING ENVIRONMENT VARIABLES
 dotenv.config(); 	// ALL ENVIRONMENT VARIABLESS ARE NOW IN process.env
 
-// CREATING MYSQL CONNECTION POOL
-pool.createPool(process.env);
-
-// TESTING CONNECTION WITH DATABASE
+// CREATING MYSQL CONNECTION POOL AND TESTING CONNECTION
+pool.createPool();
 pool.testConnection();
 
 // USING body-parser TO PARSE POST DATA
@@ -26,7 +24,10 @@ app.use(routes);
 // ERROR HANDLING
 if(process.env.NODE_DEBUG_MODE === 'true'){ 	// WILL SEND ERROR TO USERS
 	app.use(function(err, req, res, next){
-		console.log(err.stack);
+		// DONT PRINT USER ERRORS
+		if(err.status && err.status >= 500)
+			console.log(err.stack);
+
 		res.setHeader('Content-Type', 'text/plain');
 		res.status(err.status || 500);
 		res.send(err.stack);
@@ -34,7 +35,10 @@ if(process.env.NODE_DEBUG_MODE === 'true'){ 	// WILL SEND ERROR TO USERS
 }
 else{ 											// NO STACKTRACE LEAKED TO USERS
 	app.use(function(err, req, res, next){
-		console.log(err.stack);
+		// DONT PRINT USER ERRORS
+		if(err.status && err.status >= 500)
+			console.log(err.stack);
+
 		res.setHeader('Content-Type', 'text/plain');
 		res.status(err.status || 500);
 		res.send('There was an error with the server!');

@@ -1,0 +1,1 @@
+SELECT COUNT(*) AS `valid`, `id` AS `account_id` FROM `accounts` WHERE `name` = ? AND `password` = ? AND `gm` > ?;

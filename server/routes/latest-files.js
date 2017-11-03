@@ -6,7 +6,7 @@ const sqlFolder = __dirname +'/../sql/routes/latest-files/';
 
 // GET INFORMATION ON LATEST FILE VERSION
 router.get('/latest-files', function(req, res, appNext){
-	sqlUtil.query(sqlFolder +'get-all-files-info.sql', [], function(err, results, fields){
+	sqlUtil.query(sqlFolder +'select-all-files-info.sql', null, function(err, results, fields){
 		if(err){
 			appNext(err);
 		}

@@ -8,7 +8,13 @@ const request = require('request');
 dotenv.config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED="0";
 
-const {app, BrowserWindow, Menu, ipcMain} = electron;
+const {
+	app, 
+	BrowserWindow, 
+	Menu, 
+	ipcMain, 
+	session
+} = electron;
 
 let mainWindow;
 
@@ -40,7 +46,7 @@ app.on('ready', function(){
 
 
 // HANDLES login:dev FROM ipcRenderer
-ipcMain.on('login:dev', function(event, credentials){
+ipcMain.on('dev-login:attemp', function(event, credentials){
 
 	let options = {
 		url: process.env.DS_WEB_SERVER_HOME +'/login/devs',
@@ -50,6 +56,27 @@ ipcMain.on('login:dev', function(event, credentials){
 
 	// POSTING TO SERVER
 	request(options, function(err, res, body){
-		// TODO: HANDLE RESPONSE FROM SERVER
+		body = JSON.parse(body);
+
+		if(res.statusCode == 200){ 	// LOGIN SUCCESSFUL
+			const cookie = {
+				url: process.env.DS_WEB_SERVER_HOME,
+				name: body.cookie_name,
+				value: body.token,
+				expirationDate: body.expiry/1000
+			};
+
+			session.defaultSession.cookies.set(cookie, function(err){
+				if(err){ 	// FAILED TO WRITE COOKIE
+					mainWindow.webContents.send('dev-login:failure', {reason: 'Failed to store login token', status: null});
+				}
+				else{ 		// ALL GOOD
+					mainWindow.webContents.send('dev-login:success');
+				}
+			});
+		}
+		else{ 						// LOGIN FAILED
+			mainWindow.webContents.send('dev-login:failure', {reason: 'Incorrect username or password', status: res.statusCode});
+		}
 	});
 });

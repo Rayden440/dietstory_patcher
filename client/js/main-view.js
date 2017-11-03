@@ -21,5 +21,14 @@ $(document).ready(function(){
 // HANDLES DEV LOGIN
 function devLogin(){
 	// SENDS LOGIN CREDENTIALS TO main.js
-	ipcRenderer.send('login:dev',{username: $('#dev-login-username').val(), password: $('#dev-login-password').val()});
+	ipcRenderer.send('dev-login:attemp',{username: $('#dev-login-username').val(), password: $('#dev-login-password').val()});
 }
+
+// HANDLE RESPONSE FROM main.js
+ipcRenderer.on('dev-login:success', function(event){
+	console.log('login success');
+	$('#body-fragment').attr('src', 'dev_fragment.html');
+});
+ipcRenderer.on('dev-login:failure', function(event, err){
+	alert(JSON.stringify(err));
+});
