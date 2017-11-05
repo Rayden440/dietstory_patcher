@@ -2,73 +2,25 @@
 <html>
 <head>
 	<title>DietStory Patcher</title>
-
-	<!--Import Google Icon Font-->
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<!--Import materialize.css-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-	<!--Import custom css-->
+	<!-- PAGE'S CSS -->
 	<link rel="stylesheet" type="text/css" href="../css/main.css">
+	<!-- SEMANTIC CSS -->
+	<link rel="stylesheet" type="text/css" href="../semantic/semantic.min.css">
 </head>
 <body>
-	<div class="navbar-fixed">
-		<nav class="transparent z-depth-0">
-			<div class="nav-wrapper">
-				<ul class="side-nav" id="slide-out">
-					<li><div class="divider"></div></li>
-					<li><a class="subheader">Options</a></li>
-					<li><a href="#dev-login-modal" class="waves-effect waves-purple modal-trigger"><i class="material-icons">build</i>Dev Mode</a></li>
-					<li><a href="#!" class="waves-effect waves-purple"><i class="material-icons">close</i>Disconnect</a></li>
-				</ul>
-				<!-- /.side-nav -->
-
-				<a href="#" data-activates="slide-out" class="button-collapse show-on-large">
-					<i class="large material-icons icon-purple">menu</i>
-				</a>
-			</div>
-			<!-- /.nav-wrapper -->
-		</nav>
+	<div id="sidebar" class="ui left vertical inverted sidebar labeled icon menu">
+		<!-- APPENDED USING JQUERY! -->
 	</div>
-	<!-- /.navbar-fixed -->
+	<!-- /#sidebar -->
 
-	<div class="parent">
-		<iframe id="body-fragment" src="main_fragment.html"></iframe>
+	<div id="pusher" class="pusher">
+		<!-- APPENDED USING JQUERY! -->
 	</div>
+	<!-- /.pusher -->
 
-	<!-- MODALS BELOW -->
-	<div id="dev-login-modal" class="modal login-modal-size">
-		<div class="modal-content">
-			<h5 class="center-align">Developer Login</h5>
-			<div class="divider login-modal-divider"></div>
-			<div class="row">
-				<form class="col s12">
-					<div class="row">
-						<div class="input-field col s10 offset-s1">
-							<input type="text" id="dev-login-username">
-							<label for="dev-login-username">Username</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s10 offset-s1">
-							<input type="password" id="dev-login-password">
-							<label for="dev-login-password">Password</label>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-		<div class="modal-footer">
-			<button class="modal-action modal-close waves-effect waves-green btn-flat" type="button" onclick="devLogin()">Login</button>
-		</div>
-	</div>
-	<!-- /.modal -->
-
-
-
-	<!--Import custom js-->
-	<script type="text/javascript" src="../js/main-view.js"></script>
-	<!--Import materialize.js-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+	<!-- SEMANTIC JS -->
+	<script type="text/javascript" src="../semantic/semantic.min.js"></script>
+	<!-- PAGE'S SCRIPT -->
+	<script type="text/javascript" src="../js/front/main-script.js"></script>
 </body>
 </html>

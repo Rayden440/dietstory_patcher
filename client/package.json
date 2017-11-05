@@ -13,10 +13,12 @@
   },
   "license": "MIT",
   "dependencies": {
+    "async": "^2.5.0",
     "dotenv": "^4.0.0",
-    "electron": "^1.7.9",
-    "hammerjs": "^2.0.8",
-    "jquery": "2.2.4",
+    "jquery": "^3.2.1",
     "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "electron": "^1.7.9"
   }
 }

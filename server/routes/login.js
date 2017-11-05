@@ -88,7 +88,6 @@ router.post('/login/devs', function(req, res, appNext){
 			let response = {
 				status: 200,
 				message: 'login success',
-				cookie_name: 'access_token',
 				token: token,
 				expiry: expiry
 			};

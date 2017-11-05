@@ -1,0 +1,39 @@
+<button id="sidebar-toggle-btn" class="ui circular icon button large fixed">
+	<i class="sidebar icon"></i>
+</button>
+
+<div class="ui grid container">
+	<div class="row">
+		<h2 id="target" class="seven wide column">Patcher Here</h2>
+	</div>
+	<div class="row">
+		<p>TODO: Make look good</p>
+	</div>
+</div>
+<!-- /.ui.grid.container -->
+
+<!-- MODALS (HIDDEN UNTIL TRIGGERED) -->
+<div id="dev-login-modal" class="ui mini modal">
+	<div class="header text centered">Developers Login</div>
+	<div class="content">
+		<div id="dev-login-modal-form" class="ui small form">
+			<div class="field">
+				<label><i class="user icon"></i>Username</label>
+				<input id="dev-login-username" type="text">
+			</div>
+			<div class="field">
+				<label><i class="lock icon"></i>Password</label>
+				<input id="dev-login-password" type="password">
+			</div>
+			<div class="ui error message">
+				<p id="dev-login-modal-error-message"></p>
+			</div>
+		</div>
+		<!-- /.ui.form -->
+	</div>
+	<!-- /.content -->
+	<div class="actions">
+		<button class="ui approve positive button">Login</button>
+	</div>
+</div>
+<!-- /#dev-login-modal -->

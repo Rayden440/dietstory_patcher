@@ -1,41 +1,8 @@
-body {
-	margin: 0;
-}
-.parent {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-.parent iframe {
-    border: none;
-    flex-grow: 1;
+#sidebar-toggle-btn{
+	margin-top: 10px !important;
+	margin-left: 12px !important;
 }
 
-
-.navbar-fixed {
-	position: absolute;
-	z-index: 999999999;
-}
-
-i.icon-purple {
-	color: #5e35b1;
-}
-
-.login-modal-size {
-	width: 55% !important;
-	max-width: 500px !important;
-}
-
-.login-modal-divider {
-	margin-bottom: 10px !important;
-}
-
-/* label focus color */
-.input-field input[type=text]:focus + label, input[type=password]:focus +label {
-	color: #5e35b1 !important;
-}
-/* label underline focus color */
-.input-field input[type=text]:focus, input[type=password]:focus {
-	border-bottom: 1px solid #5e35b1 !important;
-	box-shadow: 0 1px 0 0 #5e35b1 !important;
+.text.centered{
+	text-align: center;
 }

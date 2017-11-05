@@ -2,19 +2,13 @@ const electron = require('electron');
 const url = require('url');
 const path = require('path');
 const dotenv = require('dotenv');
-const request = require('request');
+const loginHandler = require('./js/back/login-handler');
 
 // LOADS ENVIRONMENT VARIABLES
 dotenv.config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED="0";
 
-const {
-	app, 
-	BrowserWindow, 
-	Menu, 
-	ipcMain, 
-	session
-} = electron;
+const {app, BrowserWindow, Menu, ipcMain, session} = electron;
 
 let mainWindow;
 
@@ -24,7 +18,8 @@ app.on('ready', function(){
 	// CREATES WINDOW
 	mainWindow = new BrowserWindow({
 		minHeight: 600,
-		minWidth: 800
+		minWidth: 900,
+		show: false
 	});
 
 	// LOAD HTML
@@ -39,44 +34,26 @@ app.on('ready', function(){
 		app.quit();
 	});
 
-	// REMOVING MENU BAR IF IN PRODUCTION MODE
+	//session.defaultSession.cookies.remove('https://127.0.0.1', 'dev_token', function(){});
+
+	// SHOWS WINDOW ONLY AFTER HTML FINISH LOADING - FEELS LESS LAGGY
+	mainWindow.once('ready-to-show', function(){
+		mainWindow.show();
+	});
+
+	// REMOVING MENU BAR IN PRODUCTION MODE
 	if(process.env.ELECTRON_MODE === 'prod')
 		Menu.setApplicationMenu(null);
 });
 
 
-// HANDLES login:dev FROM ipcRenderer
+
+// HANDLES dev-login:check-token FROM ipcRenderer
+ipcMain.on('dev-login:check-token', function(event){
+	loginHandler.checkDevToken(mainWindow, session);
+});
+
+// HANDLES dev-login:dev FROM ipcRenderer
 ipcMain.on('dev-login:attemp', function(event, credentials){
-
-	let options = {
-		url: process.env.DS_WEB_SERVER_HOME +'/login/devs',
-		method: 'POST',
-		form: credentials
-	}
-
-	// POSTING TO SERVER
-	request(options, function(err, res, body){
-		body = JSON.parse(body);
-
-		if(res.statusCode == 200){ 	// LOGIN SUCCESSFUL
-			const cookie = {
-				url: process.env.DS_WEB_SERVER_HOME,
-				name: body.cookie_name,
-				value: body.token,
-				expirationDate: body.expiry/1000
-			};
-
-			session.defaultSession.cookies.set(cookie, function(err){
-				if(err){ 	// FAILED TO WRITE COOKIE
-					mainWindow.webContents.send('dev-login:failure', {reason: 'Failed to store login token', status: null});
-				}
-				else{ 		// ALL GOOD
-					mainWindow.webContents.send('dev-login:success');
-				}
-			});
-		}
-		else{ 						// LOGIN FAILED
-			mainWindow.webContents.send('dev-login:failure', {reason: 'Incorrect username or password', status: res.statusCode});
-		}
-	});
+	loginHandler.devLogin(mainWindow, session, credentials);
 });
