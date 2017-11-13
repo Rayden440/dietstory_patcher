@@ -13,10 +13,14 @@ DB_PORT=3306
 DB_USERNAME=root
 DB_PASSWORD=
 DB_NAME=maplesolaxia
-DB_CONNECTION_LIMIT=5
+DB_CONNECTION_LIMIT=50
 
 # server configuration
 NODE_USE_SSL=true
+NODE_DOMAIN=127.0.0.1
 NODE_PORT=443
 NODE_DEBUG_MODE=false
+NODE_MIN_DEV_TOOL_LEVEL=3
+NODE_JWT_SECRET=*your_secret_key_here*
+NODE_JWT_EXPIRY=604800000
 ----------------------------------------------------------------------------------------
