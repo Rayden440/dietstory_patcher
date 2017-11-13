@@ -17,8 +17,10 @@ app.on('ready', function(){
 
 	// CREATES WINDOW
 	mainWindow = new BrowserWindow({
+		height: 600,
+		width: 1000,
 		minHeight: 600,
-		minWidth: 900,
+		minWidth: 1000,
 		show: false
 	});
 
