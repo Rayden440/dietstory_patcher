@@ -1,0 +1,38 @@
+<div class="ui grid container">
+	<div class="four column row">
+		<div class="column">
+			<button id="dev-add-files-btn" class="ui inverted button teal">
+				<i class="plus icon"></i>
+				Add File(s)
+			</button>
+		</div>
+		<div class="column">
+			<button class="ui inverted button violet">
+				<i class="refresh icon"></i>
+				Scan Changes
+			</button>
+		</div>
+	</div>
+</div>
+
+
+
+
+<!-- MODALS (HIDDEN UNTIL TRIGGERED) -->
+<div id="dev-add-files-modal" class="ui mini modal">
+	<div class="header text centered">Files to Upload</div>
+	<div class="content">
+		<div id="dev-add-files-modal-form" class="ui form">
+			<div class="field text centered">
+				<label id="dev-add-files-label" class="file-input-label"><i class="upload icon"></i>Select File(s)</label>
+				<input id="dev-add-files-input" type="file" class="file-input" multiple="multiple">
+			</div>
+		</div>
+		<!-- /.ui.form -->
+	</div>
+	<!-- /.content -->
+	<div class="actions">
+		<button class="ui approve positive disabled button">Next</button>
+	</div>
+</div>
+<!-- /#dev-login-modal -->

@@ -1,3 +1,20 @@
+body{
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
+
+#pusher{
+	flex: 1;
+	min-height: 0% !important;
+}
+
+.footer{
+	background-color: rgb(27, 28, 29);
+	padding-top: 14px;
+	padding-bottom: 14px;
+}
+
 #sidebar-toggle-btn{
 	margin-top: 10px !important;
 	margin-left: 12px !important;
@@ -5,4 +22,43 @@
 
 .text.centered{
 	text-align: center;
+}
+
+.footer button{
+	min-height: 100% !important;
+	min-width: 100% !important;
+}
+
+.file-input{
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.file-input-label{
+	font-size: 1.25em !important;
+	font-weight: 700 !important;
+	color: white !important;
+	background-color: #2185d0 !important;
+	display: inline-block !important;
+	padding-right: 21px;
+	padding-left: 21px;
+	padding-top: 11px;
+	padding-bottom: 11px;
+	border-radius: 4px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.file-input-label:focus,
+.file-input-label:hover{
+	background-color: #1678c2 !important;
+}
+
+#dev-add-files-modal .content{
+	padding-top: 40px;
+	padding-bottom: 40px;
 }

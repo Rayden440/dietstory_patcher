@@ -30,6 +30,20 @@ $(document).on('click', '#sidebar-toggle-btn', function(){
 	$('#sidebar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');
 });
 
+// CLICKING ON 'Add Files' IN DEV MODE BRINGS UP THE MODAL TO ADD UNTRACKED FILES
+$(document).on('click', '#dev-add-files-btn', function(){
+	$('#dev-add-files-modal').modal('show');
+});
+
+// BRINGS UP THE WINDOW TO ALLOW FILE SELECTIONS
+$(document).on('click', '#dev-add-files-label', function(){
+	$('#dev-add-files-input').click();
+});
+
+$(document).on('change', '#dev-add-files-input', function(e){
+	console.log(e.target.files);
+});
+
 
 
 
@@ -100,12 +114,18 @@ function enterDevMode(){
 			fs.readFile(fragmentsDir +'sidebar-dev.html', 'utf8', function(err, html){
 				callback(err, html);
 			});
+		},
+		footer: function(callback){
+			fs.readFile(fragmentsDir +'footer-dev.html', 'utf8', function(err, html){
+				callback(err, html);
+			});
 		}
 	}, 
 	// FINAL FUNCTION OF PARALLEL
 	function(err, results){
 		$('#sidebar').html(results.sidebar);
 		$('#pusher').html(results.pusher);
+		$('#footer').html(results.footer);
 	});
 }
 
