@@ -21,7 +21,7 @@ function getConnection(callback){
 		var err = new Error('Connection pool has yet to be created.');
 		Error.captureStackTrace(err);
 
-		callback(err, null)
+		callback(err, null);
 	}
 	else{
 		pool.getConnection(function(err, con){

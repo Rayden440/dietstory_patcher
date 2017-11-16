@@ -5,3 +5,6 @@ node_modules
 
 .DS_Store
 thumbs.db
+
+#Ignore configs
+server/config/*

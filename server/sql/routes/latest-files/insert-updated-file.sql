@@ -1,0 +1,1 @@
+INSERT INTO latest_files (file_name, relative_path, sha256, direct_download, last_changed) VALUES ? ? ? ? NOW()
