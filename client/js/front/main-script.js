@@ -253,13 +253,12 @@ ipcRenderer.on('dev-login:have-token', function(event, response){
 
 // FILE INFO FROM THE MAIN PROCESS => SET AS GLOBAL ARRAY
 ipcRenderer.on('file-info:set-info', function(event, info){
-	console.log(info);
 	trackedFiles = info;
 });
 
 // FILE HASING COMPLETE => ADD TO NEW FILES ARRAY
 ipcRenderer.on('dev-add-untracked-files:hash-complete', function(event, info){
-	console.log(info);
+	$('#dev-upload-files-btn').removeClass('disabled');
 	newFiles = info;
 	refreshAccordion();
 });
