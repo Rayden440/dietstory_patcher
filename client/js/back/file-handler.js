@@ -15,7 +15,6 @@ function generateHash(mainWindow, files){
 		});
 	}, 
 	function(err, results){
-		console.log(results);
 		mainWindow.webContents.send('dev-add-untracked-files:hash-complete', results);
 	});
 }
