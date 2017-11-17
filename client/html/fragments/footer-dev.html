@@ -3,7 +3,7 @@
 		<div class="column">
 			<button id="dev-add-files-btn" class="ui inverted button blue">
 				<i class="plus icon"></i>
-				Add File(s)
+				New File(s)
 			</button>
 		</div>
 		<div class="column">
@@ -25,7 +25,9 @@
 			</button>
 		</div>
 	</div>
+	<!-- /.four.column.row -->
 </div>
+<!-- /.ui.grid.container -->
 
 
 
@@ -47,4 +49,26 @@
 		<button id="dev-add-files-modal-next-btn" class="ui approve positive disabled button">Next</button>
 	</div>
 </div>
-<!-- /#dev-login-modal -->
+<!-- /.ui.mini.modal -->
+
+<div id="dev-add-files-duplicates-modal" class="ui basic modal">
+	<div class="header text centered">Duplicate Files</div>
+	<div class="content">
+		<p>Cannot add the following files because they are already tracked:</p>
+		<div id="duplicate-files-list" class="ui list"></div>
+		<p>Use the Scan Changes function instead, or remove the files first.</p>
+		<p>Any non-duplicated files will be added...</p>
+	</div>
+	<!-- /.content -->
+	<div class="actions">
+		<button class="ui green approve inverted button">Accept</button>
+	</div>
+</div>
+
+<div id="dev-add-files-loading-modal" class="ui basic modal">
+	<div class="content">
+		<div class="ui huge text loader">Calculating SHA-256 Hashes...</div>
+	</div>
+	<!-- /.content -->
+</div>
+<!-- /.ui.mini.modal -->

@@ -4,9 +4,14 @@ body{
 	flex-direction: column;
 }
 
+::-webkit-scrollbar{
+	height: 0.65em !important;
+}
+
 #pusher{
 	flex: 1;
 	min-height: 0% !important;
+	overflow-y: auto;
 }
 
 .footer{

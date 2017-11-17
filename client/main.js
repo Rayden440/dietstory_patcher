@@ -79,3 +79,8 @@ ipcMain.on('dev-logout:remove-cookie', function(event){
 		mainWindow.webContents.send('dev-logout:cookie-removed');
 	});
 });
+
+// LETS THE RENDERER KNOW WHERE THE APP IS LOCATED
+ipcMain.on('app-info:get-location', function(event){
+	mainWindow.webContents.send('app-info:set-location', process.env.ELECTRON_STARTING_DIRECTORY);
+});
