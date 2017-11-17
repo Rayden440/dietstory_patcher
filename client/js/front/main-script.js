@@ -23,13 +23,6 @@ $(document).ready(function(){
 	enterNormalMode();
 });
 
-$(document).on('click', '#dev-login-modal-trigger', function(){
-	ipcRenderer.send('dev-login:check-token');
-});
-$(document).on('click', '#dev-login-modal-trigger', function(){
-	ipcRenderer.send('dev-login:check-token');
-});
-
 // CLICKING ON 'Dev Mode' IN THE SIDEBAR => BRINGS UP LOGIN PROMPT
 $(document).on('click', '#dev-login-modal-trigger', function(){
 	ipcRenderer.send('dev-login:check-token');

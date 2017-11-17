@@ -60,7 +60,7 @@ function checkDevToken(mainWindow, session){
 					url: process.env.DS_WEB_SERVER_HOME +'/login/refresh-token',
 					method: 'GET',
 					headers: {
-						'DEV-JWT': token
+						'dev-jwt': cookies[0].value
 					}
 				};
 

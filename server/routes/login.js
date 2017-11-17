@@ -1,6 +1,7 @@
 const express = require('express');
 const async = require('async');
 const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
 const sanitizer = require('sanitizer');
 const sqlUtil = require('../util/sql-util');
 const validator = require('../util/validator');
@@ -100,14 +101,67 @@ router.post('/login/devs', function(req, res, appNext){
 
 
 
+
 // ROUTE FOR REFRESHING A TOKEN
-// router.get('/login/refresh-token', function(req, res, appNext){
-// 	async.waterfall([
-		
-// 	], 
-// 	// FINAL FUNCTION OF WATERFALL
-// 	function(err){});
-// });
+router.get('/login/refresh-token', function(req, res, appNext){
+	async.waterfall([
+		// GETTING TOKEN AND VERIFYING TOKEN
+		function(next){
+			const oldToken = req.headers['dev-jwt'];
+			
+			jwt.verify(oldToken, process.env.NODE_JWT_SECRET, function(err, decoded){
+				if(err){
+					var error = new Error(err.message);
+					Error.captureStackTrace(error);
+					error.status = 400;
+					next(error);
+				}
+				else{
+					next(null, decoded);
+				}
+			});
+		},
+
+		// CREATING NEW TOKEN
+		function(decoded, next){	
+			const payload = {
+				id: decoded.id,
+				username: decoded.username
+			};
+			const options = {
+				expiresIn: parseInt(process.env.NODE_JWT_EXPIRY)/1000,
+				issuer: process.env.NODE_DOMAIN
+			};
+			const expiry = Date.now() + parseInt(process.env.NODE_JWT_EXPIRY);
+
+			tokenGenerator.generate(payload, options, function(err, newToken){
+				if(err){
+					next(err);
+				}
+				else{
+					next(null, newToken, expiry);
+				}
+			});
+		}
+	], 
+	// FINAL FUNCTION OF WATERFALL
+	function(err, newToken, expiry){
+		if(err){
+			appNext(err);
+		}
+		else{
+			let response = {
+				status: 200,
+				message: 'token refreshed',
+				token: newToken,
+				expiry: expiry
+			};
+
+			res.setHeader('Content-Type', 'application/json');
+			res.status(200).send(response);
+		}
+	});
+});
 
 
 
