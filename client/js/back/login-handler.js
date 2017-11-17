@@ -1,4 +1,5 @@
 const electron = require('electron');
+const jwt = require('jsonwebtoken');
 const request = require('request');
 
 function devLogin(mainWindow, session, credentials){
@@ -6,7 +7,7 @@ function devLogin(mainWindow, session, credentials){
 		url: process.env.DS_WEB_SERVER_HOME +'/login/devs',
 		method: 'POST',
 		form: credentials
-	}
+	};
 
 	// POSTING TO SERVER
 	request(options, function(err, res, body){
@@ -19,8 +20,8 @@ function devLogin(mainWindow, session, credentials){
 			const cookie = {
 				url: process.env.DS_WEB_SERVER_HOME,
 				name: 'dev_token',
-				value: body.token
-				//expirationDate: body.expiry/1000
+				value: body.token,
+				expirationDate: body.expiry/1000
 			};
 
 			session.defaultSession.cookies.set(cookie, function(err){
@@ -28,7 +29,7 @@ function devLogin(mainWindow, session, credentials){
 					mainWindow.webContents.send('dev-login:failure', {reason: 'Token Storage Error', status: null});
 				}
 				else{ 		// ALL GOOD
-					mainWindow.webContents.send('dev-login:success');
+					mainWindow.webContents.send('dev-login:success', {tokenString: body.token, decoded: jwt.decode(body.token)});
 				}
 			});
 		}
@@ -50,7 +51,47 @@ function checkDevToken(mainWindow, session){
 			mainWindow.webContents.send('dev-login:no-token');
 		}
 		else{
-			mainWindow.webContents.send('dev-login:have-token');
+			const token = jwt.decode(cookies[0].value); 	// EXPIRY TIME OF TOKEN IS IN SECONDS
+			const now = new Date().getTime()/1000;			// TIME RIGHT NOW IN SECONDS
+			const _24hrs = 24 * 60 * 60;
+			
+			if((token.exp - now) <= _24hrs){ 	// TOKEN EXIRES SOON => REQUEST SERVER FOR A NEW ONE
+				let options = {
+					url: process.env.DS_WEB_SERVER_HOME +'/login/refresh-token',
+					method: 'GET',
+					headers: {
+						'DEV-JWT': token
+					}
+				};
+
+				request(options, function(err, res, body){
+					if(res != null && res.statusCode == 200){ 				// GOT NEW TOKEN => SET COOKIE AND USE NEW TOKEN
+						body = JSON.parse(body);
+
+						const newCookie = {
+							url: process.env.DS_WEB_SERVER_HOME,
+							name: 'dev_token',
+							value: body.token,
+							expirationDate: body.expiry/1000
+						};
+
+						session.defaultSession.cookies.set(newCookie, function(err){
+							if(err){ 						// ERR => USE OLD TOKEN
+								mainWindow.webContents.send('dev-login:have-token', {tokenString: cookies[0].value, decoded: token});
+							}
+							else{ 							// USE NEW TOKEN
+								mainWindow.webContents.send('dev-login:have-token', {tokenString: body.token, decoded: jwt.decode(body.token)});
+							}
+						});
+					}
+					else{ 													// SOME ERROR => USE OLD TOKEN
+						mainWindow.webContents.send('dev-login:have-token', {tokenString: cookies[0].value, decoded: token});
+					}
+				});
+			}
+			else{								// TOKEN NOT EXPIRYING SOON
+				mainWindow.webContents.send('dev-login:have-token', {tokenString: cookies[0].value, decoded: token});
+			}		
 		}
 	});
 }

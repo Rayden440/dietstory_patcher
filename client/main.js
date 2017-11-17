@@ -3,10 +3,13 @@ const url = require('url');
 const path = require('path');
 const dotenv = require('dotenv');
 const loginHandler = require('./js/back/login-handler');
+const fileHandler = require('./js/back/file-handler');
+const netHandler = require('./js/back/net-handler');
 
 // LOADS ENVIRONMENT VARIABLES
 dotenv.config();
-process.env.NODE_TLS_REJECT_UNAUTHORIZED="0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+process.env.ELECTRON_STARTING_DIRECTORY = 'C:\\Nexon\\MapleStory'; 	// REPLACE WITH __dirname IN PRODUCTION!!
 
 const {app, BrowserWindow, Menu, ipcMain, session} = electron;
 
@@ -55,7 +58,24 @@ ipcMain.on('dev-login:check-token', function(event){
 	loginHandler.checkDevToken(mainWindow, session);
 });
 
-// HANDLES dev-login:dev FROM ipcRenderer
+// HANDLES dev-login:attemp FROM ipcRenderer
 ipcMain.on('dev-login:attemp', function(event, credentials){
 	loginHandler.devLogin(mainWindow, session, credentials);
+});
+
+// HANDLES dev-add-untracked-files:generate-hash FROM ipcRenderer
+ipcMain.on('dev-add-untracked-files:generate-hash', function(event, files){
+	fileHandler.generateHash(mainWindow, files);
+});
+
+// REQUEST SERVER FOR ALL INFO ON TRACKED FILES
+ipcMain.on('files-info:get-info', function(event){
+	netHandler.getFileInfo(mainWindow);
+});
+
+// LOGOUT FROM DEVELOPER
+ipcMain.on('dev-logout:remove-cookie', function(event){
+	session.defaultSession.cookies.remove(process.env.DS_WEB_SERVER_HOME, 'dev_token', function(){
+		mainWindow.webContents.send('dev-logout:cookie-removed');
+	});
 });

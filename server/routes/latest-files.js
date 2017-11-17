@@ -11,8 +11,8 @@ router.get('/latest-files', function(req, res, appNext){
 			appNext(err);
 		}
 		else{
-			res.setHeader('Content-Type', 'text/plain');
-			res.status(200).send(JSON.stringify(results));
+			res.setHeader('Content-Type', 'application/json');
+			res.status(200).send(results);
 		}
 	});
 });

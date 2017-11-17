@@ -30,12 +30,12 @@ body{
 }
 
 .file-input{
-	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
+	width: 0.1px !important;
+	height: 0.1px !important;
+	opacity: 0 !important;
 	overflow: hidden;
-	position: absolute;
-	z-index: -1;
+	position: absolute !important;
+	z-index: -1 !important;
 }
 
 .file-input-label{
@@ -61,4 +61,14 @@ body{
 #dev-add-files-modal .content{
 	padding-top: 40px;
 	padding-bottom: 40px;
+}
+
+.dev-accordion-table-container{
+	height: 100%;
+	width: 100%;
+	overflow-x: auto;
+}
+
+.float-right{
+	float: right;
 }

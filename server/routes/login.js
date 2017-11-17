@@ -98,4 +98,18 @@ router.post('/login/devs', function(req, res, appNext){
 	});
 });
 
+
+
+// ROUTE FOR REFRESHING A TOKEN
+// router.get('/login/refresh-token', function(req, res, appNext){
+// 	async.waterfall([
+		
+// 	], 
+// 	// FINAL FUNCTION OF WATERFALL
+// 	function(err){});
+// });
+
+
+
+
 module.exports = router;

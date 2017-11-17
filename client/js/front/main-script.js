@@ -4,8 +4,10 @@ const async = require('async');
 const electron = require('electron');
 const {ipcRenderer} = electron;
 
-const fragmentsDir = __dirname + '/../html/fragments/';
-
+const fragmentsDir = __dirname + '/fragments/';
+var trackedFiles = new Array();
+var newFiles = new Array();
+var devToken, devUserInfo;
 
 /*
    _  ___                        
@@ -17,12 +19,36 @@ const fragmentsDir = __dirname + '/../html/fragments/';
 
 */
 $(document).ready(function(){
+	ipcRenderer.send('files-info:get-info');
 	enterNormalMode();
+});
+
+$(document).on('click', '#dev-login-modal-trigger', function(){
+	ipcRenderer.send('dev-login:check-token');
+});
+$(document).on('click', '#dev-login-modal-trigger', function(){
+	ipcRenderer.send('dev-login:check-token');
 });
 
 // CLICKING ON 'Dev Mode' IN THE SIDEBAR => BRINGS UP LOGIN PROMPT
 $(document).on('click', '#dev-login-modal-trigger', function(){
 	ipcRenderer.send('dev-login:check-token');
+});
+
+// CLICKING ON LOGIN BUTTON ON THE DEV LOGIN MODAL
+$(document).on('click', '#dev-login-modal-btn', function(){
+	devLogin();
+});
+
+// CLICKING ON 'Exit Dev Mode' IN THE SIDEBAR
+$(document).on('click', '#exit-dev-mode-btn', function(){
+	enterNormalMode();
+	$('#sidebar').sidebar('toggle');
+});
+
+// CLICKING ON 'Logoff' BUTTON IN DEV MODE
+$(document).on('click', '#dev-logout-btn', function(){
+	ipcRenderer.send('dev-logout:remove-cookie');
 });
 
 // CLICKING ON MENU BUTTON => BRINGS OUT SIDEBAR
@@ -40,9 +66,33 @@ $(document).on('click', '#dev-add-files-label', function(){
 	$('#dev-add-files-input').click();
 });
 
+// WHEN FILES ARE SELECTED, COUNT THE FILES AND ENABLE 
 $(document).on('change', '#dev-add-files-input', function(e){
-	console.log(e.target.files);
+	countUntrackedFiles(e.target.files);
 });
+
+// LET THE MAIN PROCESS CREATE HASH FOR THE FILES
+$(document).on('click', '#dev-add-files-modal-next-btn', function(){
+	let files = $('#dev-add-files-input').get(0).files;
+	let fileInfo = new Array();
+
+	for(let i = 0; i < files.length; i++){
+		fileInfo.push({
+			last_changed: files[i].lastModified,
+			name: files[i].name,
+			path: files[i].path,
+			size: files[i].size
+		});
+	}
+
+	$('#dev-add-files-input').val('');	// )
+	files = null;						// ) CLEARING SELECTED FILES IN THE FORM
+	countUntrackedFiles(null);			// )
+
+	ipcRenderer.send('dev-add-untracked-files:generate-hash', fileInfo);
+});
+
+
 
 
 
@@ -123,11 +173,32 @@ function enterDevMode(){
 	}, 
 	// FINAL FUNCTION OF PARALLEL
 	function(err, results){
+		results.sidebar = results.sidebar.replace(/\{DEV_USERNAME\}/g, devUserInfo.username);
 		$('#sidebar').html(results.sidebar);
 		$('#pusher').html(results.pusher);
 		$('#footer').html(results.footer);
+		refreshAccordion();
 	});
 }
+
+// CHANGES TEXT ON BUTTON OF FILE SELECTION BUTTON IN #dev-add-files-modal
+function countUntrackedFiles(files){
+	if(files && files.length > 1){
+		$('#dev-add-files-label').html('<i class="upload icon"></i> ' +files.length +' files selected');
+		$('#dev-add-files-modal-next-btn').removeClass('disabled');
+	}
+	else if(files && files.length == 1){
+		$('#dev-add-files-label').html('<i class="upload icon"></i> ' +files[0].name);
+		$('#dev-add-files-modal-next-btn').removeClass('disabled');
+	}
+	else{
+		$('#dev-add-files-label').html('<i class="upload icon"></i> Select File(s)');
+		$('#dev-add-files-modal-next-btn').addClass('disabled');
+	}
+}
+
+
+
 
 
 
@@ -148,7 +219,13 @@ function enterDevMode(){
 
 
 // HANDLE SUCCESS EVENT FROM main.js => 
-ipcRenderer.on('dev-login:success', function(event){
+ipcRenderer.on('dev-login:success', function(event, response){
+	devToken = response.tokenString;
+	devUserInfo = {
+		id: response.decoded.id,
+		username: response.decoded.username
+	};
+
 	enterDevMode();
 });
 
@@ -160,13 +237,37 @@ ipcRenderer.on('dev-login:failure', function(event, err){
 
 // HANDLES NO TOKEN EVENT FROM main.js => OPEN LOGIN PROMPT
 ipcRenderer.on('dev-login:no-token', function(event){
-	$('#dev-login-modal').modal({
-		onHide: function(){$('#sidebar').sidebar('toggle');}, 	// TOGGLES SIDEBAR TOO
-		onApprove: function(){devLogin(); return false;}
-	}).modal('show');
+	$('#dev-login-modal').modal('show');
 });
 
 // HANDLES HAVE TOKEN EVENT FROM main.js => CHANGE INTO DEV MODE
-ipcRenderer.on('dev-login:have-token', function(event){
+ipcRenderer.on('dev-login:have-token', function(event, response){
+	devToken = response.tokenString;
+	devUserInfo = {
+		id: response.decoded.id,
+		username: response.decoded.username
+	};
+
 	enterDevMode();
+});
+
+// FILE INFO FROM THE MAIN PROCESS => SET AS GLOBAL ARRAY
+ipcRenderer.on('file-info:set-info', function(event, info){
+	console.log(info);
+	trackedFiles = info;
+});
+
+// FILE HASING COMPLETE => ADD TO NEW FILES ARRAY
+ipcRenderer.on('dev-add-untracked-files:hash-complete', function(event, info){
+	console.log(info);
+	newFiles = info;
+	refreshAccordion();
+});
+
+// COOKIE REMOVED USER IS NO LONGER AUTHORIZED
+ipcRenderer.on('dev-logout:cookie-removed', function(event){
+	devToken = null; 
+	devUserInfo = null;
+	enterNormalMode();
+	$('#sidebar').sidebar('toggle');
 });
