@@ -34,8 +34,8 @@ function upload(mainWindow, files){
 			new: [File, File, ...]
 		}
 
-		vvvv This object is found in the arrays above ^
-		File = {
+		vvvv File object is found in the arrays above ^
+		File = { 	// EXAMPLE VALUES
 			last_changed: 1507975186627, 													// in milliseconds
        		link: '(not uploaded)', 														// no link because not uploaded yet
        		name: 'Effect.wz', 																// name of file

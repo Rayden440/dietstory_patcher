@@ -39,8 +39,6 @@ app.on('ready', function(){
 		app.quit();
 	});
 
-	//session.defaultSession.cookies.remove('https://127.0.0.1', 'dev_token', function(){});
-
 	// SHOWS WINDOW ONLY AFTER HTML FINISH LOADING - FEELS LESS LAGGY
 	mainWindow.once('ready-to-show', function(){
 		mainWindow.show();
