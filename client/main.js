@@ -84,3 +84,8 @@ ipcMain.on('dev-logout:remove-cookie', function(event){
 ipcMain.on('app-info:get-location', function(event){
 	mainWindow.webContents.send('app-info:set-location', process.env.ELECTRON_STARTING_DIRECTORY);
 });
+
+// FIND FILES THAT HAVE CHANGED
+ipcMain.on('dev-scan-files:find-difference', function(event, files){
+	fileHandler.difference(mainWindow, files);
+});

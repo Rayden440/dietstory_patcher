@@ -1,38 +1,40 @@
 <div class="ui grid container">
-	<div class="four column row">
-		<div class="column">
-			<button id="dev-add-files-btn" class="ui inverted button blue">
-				<i class="plus icon"></i>
-				New File(s)
-			</button>
+	<div class="one wide column"></div>
+	<div class="fourteen wide column">
+		<div class="ui grid">
+			<div class="three column row">
+				<div class="column">
+					<button id="dev-add-files-btn" class="ui inverted button blue">
+						<i class="plus icon"></i>
+						New Files
+					</button>
+				</div>
+				<div class="column">
+					<button id="dev-scan-files-btn" class="ui inverted button orange">
+						<i class="search icon"></i>
+						Scan for Changes
+					</button>
+				</div>
+				<div class="column">
+					<button id="dev-upload-files-btn" class="ui inverted button green disabled">
+						<i class="cloud upload icon"></i>
+						Upload Files
+					</button>
+				</div>
+			</div>
+			<!-- /.three.column.row -->
 		</div>
-		<div class="column">
-			<button class="ui inverted button orange">
-				<i class="refresh icon"></i>
-				Scan Changes
-			</button>
-		</div>
-		<div class="column">
-			<button id="dev-upload-files-btn" class="ui inverted button purple disabled">
-				<i class="cloud upload icon"></i>
-				Upload to S3
-			</button>
-		</div>
-		<div class="column">
-			<button class="ui inverted button green disabled">
-				<i class="database icon"></i>
-				Update DB
-			</button>
-		</div>
+		<!-- /.ui.grid -->
 	</div>
-	<!-- /.four.column.row -->
+	<!-- /.fourteen.column.row -->
+	<div class="one wide column"></div>
 </div>
 <!-- /.ui.grid.container -->
 
 
 
 
-<!-- MODALS (HIDDEN UNTIL TRIGGERED) -->
+<!-- ======= MODALS (HIDDEN UNTIL TRIGGERED) ======= -->
 <div id="dev-add-files-modal" class="ui mini modal">
 	<div class="header text centered">Files to Upload</div>
 	<div class="content">
@@ -51,6 +53,8 @@
 </div>
 <!-- /.ui.mini.modal -->
 
+
+
 <div id="dev-add-files-duplicates-modal" class="ui basic modal">
 	<div class="header text centered">Duplicate Files</div>
 	<div class="content">
@@ -65,10 +69,32 @@
 	</div>
 </div>
 
+
+
 <div id="dev-add-files-loading-modal" class="ui basic modal">
 	<div class="content">
 		<div class="ui huge text loader">Calculating SHA-256 Hashes...</div>
 	</div>
 	<!-- /.content -->
 </div>
-<!-- /.ui.mini.modal -->
+
+<div id="dev-scan-files-loading-modal" class="ui basic modal">
+	<div class="content">
+		<div class="ui huge text loader">Scanning Files...</div>
+	</div>
+	<!-- /.content -->
+</div>
+
+
+
+<div id="dev-add-files-rejected-modal" class="ui basic modal">
+	<div class="header text centered">Rejected Files</div>
+	<div class="content">
+		<p>Cannot add the following files because they are outside of the game installation folder!</p>
+		<div id="rejected-files-list" class="ui list"></div>
+	</div>
+	<!-- /.content -->
+	<div class="actions">
+		<button class="ui green approve inverted button">Accept</button>
+	</div>
+</div>

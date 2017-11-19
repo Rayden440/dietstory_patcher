@@ -17,6 +17,9 @@ function refreshAccordion(){
 			for(let value of newFiles.values()){
 				html += generateAccordionEntry(template, newLabel, value);
 			}
+			for(let value of changedFiles.values()){
+				html += generateAccordionEntry(template, changedLabel, value);
+			}
 			for(let value of trackedFiles.values()){
 				html += generateAccordionEntry(template, '', value);
 			}

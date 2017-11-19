@@ -8,6 +8,7 @@ const {ipcRenderer} = electron;
 const fragmentsDir = __dirname + '/fragments/';
 var startingDir;
 var trackedFiles = new Map();
+var changedFiles = new Map();
 var newFiles = new Map();
 var devToken, devUserInfo;
 
@@ -52,9 +53,14 @@ $(document).on('click', '#sidebar-toggle-btn', function(){
 	$('#sidebar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');
 });
 
-// CLICKING ON 'Add Files' IN DEV MODE BRINGS UP THE MODAL TO ADD UNTRACKED FILES
+// CLICKING ON 'New Files' IN DEV MODE BRINGS UP THE MODAL TO ADD UNTRACKED FILES
 $(document).on('click', '#dev-add-files-btn', function(){
 	$('#dev-add-files-modal').modal('show');
+});
+
+// CLICKING ON 'Scan for Changes' IN DEV MODE => CHECKS FILES IN THE FRACKED LIST FOR CHANGES
+$(document).on('click', '#dev-scan-files-btn', function(){
+	scanFiles();
 });
 
 // BRINGS UP THE WINDOW TO ALLOW FILE SELECTIONS
@@ -69,54 +75,7 @@ $(document).on('change', '#dev-add-files-input', function(e){
 
 // LET THE MAIN PROCESS CREATE HASH FOR THE FILES
 $(document).on('click', '#dev-add-files-modal-next-btn', function(){
-	let files = $('#dev-add-files-input').get(0).files;
-	let uniqueFiles = new Array();
-	let duplicates = new Array();
-
-	for(let i = 0; i < files.length; i++){
-		let relativePath = './' +path.relative(startingDir, files[i].path);
-
-		if(trackedFiles.has(relativePath)){
-			duplicates.push({name: files[i].name, fullPath: files[i].path});
-		}
-		else{
-			uniqueFiles.push({
-				last_changed: files[i].lastModified,
-				name: files[i].name,
-				path: files[i].path,
-				size: files[i].size
-			});
-		}
-	}
-
-	$('#dev-add-files-input').val('');	// )
-	files = null;						// ) CLEARING SELECTED FILES IN THE FORM
-	countUntrackedFiles(null);			// )
-
-	if(duplicates.length > 0){
-		let listHTML = '';
-
-		fs.readFile(fragmentsDir + 'duplicate-files-list-template-dev.html', 'utf8', function(err, template){
-			for(let i = 0; i < duplicates.length; i++){
-				let temp = template;
-				temp = temp.replace(/\{FILE_NAME\}/g, duplicates[i].name);
-				temp = temp.replace(/\{FULL_PATH\}/g, duplicates[i].fullPath);
-				listHTML += temp +'\n';
-			}
-			$('#duplicate-files-list').html(listHTML);
-			$('#dev-add-files-duplicates-modal').modal({
-				closable: false,
-				onApprove: function(){
-					$('#dev-add-files-loading-modal').modal({closable: false}).modal('show');
-					ipcRenderer.send('dev-add-untracked-files:generate-hash', uniqueFiles);
-				}
-			}).modal('show');
-		});
-	}
-	else{
-		$('#dev-add-files-loading-modal').modal({closable: false}).modal('show');
-		ipcRenderer.send('dev-add-untracked-files:generate-hash', uniqueFiles);
-	}
+	addFiles();
 });
 
 
@@ -173,6 +132,7 @@ function enterNormalMode(){
 	function(err, results){
 		$('#sidebar').html(results.sidebar);
 		$('#pusher').html(results.pusher);
+		$('#footer').html('');
 	});
 }
 
@@ -222,6 +182,109 @@ function countUntrackedFiles(files){
 		$('#dev-add-files-label').html('<i class="upload icon"></i> Select File(s)');
 		$('#dev-add-files-modal-next-btn').addClass('disabled');
 	}
+}
+
+// GENERATE A LIST OF DUPLICATES AND UNIQUES, UNIQUE FILES ARE SENT TO THE MAIN PROCESS FOR HASH GENERATION
+function addFiles(){
+	let files = $('#dev-add-files-input').get(0).files;
+	let uniqueFiles = new Array();
+	let duplicates = new Array();
+	let rejected = new Array();
+
+	for(let i = 0; i < files.length; i++){
+		let relativePath = './' +path.relative(startingDir, files[i].path).replace(/\\/g, '/');
+
+		if(trackedFiles.has(relativePath)){
+			duplicates.push({name: files[i].name, fullPath: files[i].path});
+		}
+		else if(relativePath.indexOf('..') > -1){
+			rejected.push({name: files[i].name, fullPath: files[i].path});
+		}
+		else{
+			uniqueFiles.push({
+				last_changed: files[i].lastModified,
+				name: files[i].name,
+				path: files[i].path,
+				size: files[i].size
+			});
+		}
+	}
+
+	$('#dev-add-files-input').val('');	// )
+	files = null;						// ) CLEARING SELECTED FILES IN THE FORM
+	countUntrackedFiles(null);			// )
+
+	async.waterfall([
+
+		// DISPLAY REJECTED FILES
+		function(next){
+			if(rejected.length > 0){
+				let listHTML = '';
+
+				fs.readFile(fragmentsDir + 'duplicate-files-list-template-dev.html', 'utf8', function(err, template){
+					for(let i = 0; i < rejected.length; i++){
+						let temp = template;
+						temp = temp.replace(/\{FILE_NAME\}/g, rejected[i].name);
+						temp = temp.replace(/\{FULL_PATH\}/g, rejected[i].fullPath);
+						listHTML += temp +'\n';
+					}
+					$('#rejected-files-list').html(listHTML);
+					$('#dev-add-files-rejected-modal').modal({
+						closable: false,
+						onApprove: function(){next(null);}
+					}).modal('show');
+				});	
+			}
+			else{
+				next(null);
+			}
+		},
+
+		// DISPLAY DUPLICATE FILES
+		function(next){
+			if(duplicates.length > 0){
+				let listHTML = '';
+
+				fs.readFile(fragmentsDir + 'duplicate-files-list-template-dev.html', 'utf8', function(err, template){
+					for(let i = 0; i < duplicates.length; i++){
+						let temp = template;
+						temp = temp.replace(/\{FILE_NAME\}/g, duplicates[i].name);
+						temp = temp.replace(/\{FULL_PATH\}/g, duplicates[i].fullPath);
+						listHTML += temp +'\n';
+					}
+					$('#duplicate-files-list').html(listHTML);
+					$('#dev-add-files-duplicates-modal').modal({
+						closable: false,
+						onApprove: function(){next(null);}
+					}).modal('show');
+				});
+			}
+			else{
+				next(null);
+			}
+		}
+	], 
+	// SEND LIST OF FILE TO MAIN PROCESS TO CALCULATE HASHES
+	function(err){
+		if(uniqueFiles.length > 0){
+			$('#dev-add-files-loading-modal').modal({
+				closable: false,
+				onVisible: function(){ipcRenderer.send('dev-add-untracked-files:generate-hash', uniqueFiles);}
+			}).modal('show');
+		}
+	});
+}
+
+// SCANS FILES IN trackedFiles FOR CHANGED FILES
+function scanFiles(){
+	let fileList = new Array();
+
+	for(let file of trackedFiles.values()){
+		fileList.push(file);
+	}
+
+	$('#dev-scan-files-loading-modal').modal({closable: false}).modal('show');
+	ipcRenderer.send('dev-scan-files:find-difference', fileList);
 }
 
 
@@ -305,4 +368,15 @@ ipcRenderer.on('dev-logout:cookie-removed', function(event){
 	devUserInfo = null;
 	enterNormalMode();
 	$('#sidebar').sidebar('toggle');
+});
+
+// SCAN PROCESS COMPLETE => DISPLAY CHANGED FILES
+ipcRenderer.on('dev-scan-files:changed-files', function(event, changed){
+	for(var i = 0; i < changed.length; i++){
+		trackedFiles.delete(changed[i].path);
+		changedFiles.set(changed[i].path, changed[i]);
+	}
+
+	refreshAccordion();
+	$('#dev-scan-files-loading-modal').modal('hide');
 });
