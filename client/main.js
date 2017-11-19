@@ -89,3 +89,8 @@ ipcMain.on('app-info:get-location', function(event){
 ipcMain.on('dev-scan-files:find-difference', function(event, files){
 	fileHandler.difference(mainWindow, files);
 });
+
+// UPLOADS NEW AND UPDATED FILES
+ipcMain.on('dev-upload-files:start-upload', function(event, files){
+	netHandler.upload(mainWindow, files);
+});

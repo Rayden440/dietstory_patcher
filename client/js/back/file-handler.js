@@ -36,6 +36,7 @@ function difference(mainWindow, files){
 		async.each(results, function(singleFile, callback){
 			fs.stat(path.join(process.env.ELECTRON_STARTING_DIRECTORY, singleFile.path), function(err, stat){
 				singleFile.last_changed = new Date(stat.mtime).getTime();
+				singleFile.size = stat.size;
 				callback(null);
 			});
 		}, 

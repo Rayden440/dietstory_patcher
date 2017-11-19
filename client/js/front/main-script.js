@@ -78,6 +78,11 @@ $(document).on('click', '#dev-add-files-modal-next-btn', function(){
 	addFiles();
 });
 
+// SENDS NEW FILES AND CHANGED FILES TO 
+$(document).on('click', '#dev-upload-files-btn', function(){
+	upload();
+});
+
 
 
 
@@ -170,12 +175,8 @@ function enterDevMode(){
 
 // CHANGES TEXT ON BUTTON OF FILE SELECTION BUTTON IN #dev-add-files-modal
 function countUntrackedFiles(files){
-	if(files && files.length > 1){
-		$('#dev-add-files-label').html('<i class="upload icon"></i> ' +files.length +' files selected');
-		$('#dev-add-files-modal-next-btn').removeClass('disabled');
-	}
-	else if(files && files.length == 1){
-		$('#dev-add-files-label').html('<i class="upload icon"></i> ' +files[0].name);
+	if(files && files.length > 0){
+		$('#dev-add-files-label').html('<i class="upload icon"></i> ' +files.length +' file(s) selected');
 		$('#dev-add-files-modal-next-btn').removeClass('disabled');
 	}
 	else{
@@ -287,6 +288,24 @@ function scanFiles(){
 	ipcRenderer.send('dev-scan-files:find-difference', fileList);
 }
 
+// SENDS A LIST OF FILES IN NEW AND CHANGED MAP
+function upload(){
+	let files = {
+		new: new Array(),
+		changed: new Array()
+	};
+
+	for(let value of newFiles.values()){
+		files.new.push(value);
+	}
+
+	for(let value of changedFiles.values()){
+		files.changed.push(value);
+	}
+
+	ipcRenderer.send('dev-upload-files:start-upload', files);
+}
+
 
 
 
@@ -375,6 +394,10 @@ ipcRenderer.on('dev-scan-files:changed-files', function(event, changed){
 	for(var i = 0; i < changed.length; i++){
 		trackedFiles.delete(changed[i].path);
 		changedFiles.set(changed[i].path, changed[i]);
+	}
+
+	if(changed.length > 0){
+		$('#dev-upload-files-btn').removeClass('disabled');
 	}
 
 	refreshAccordion();
