@@ -13,10 +13,11 @@ router.use('/', require('./latest-files'));
 // ROUTE FOR LOGIN
 router.use('/', require('./login'));
 
+//MIDDLEWARE CHECK FOR DEV LOGINS
+router.use(require('./jwt-verification'));
 
-
-
-
+//ROUTES FOR UPLOAD FILE 
+router.use(require('./s3-upload.js'));
 
 
 // 404 NOT FOUND

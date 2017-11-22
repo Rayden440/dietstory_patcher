@@ -43,29 +43,29 @@ function getSignedUrl(filename, callback)
 }
 
 //Function inserting new file
-function insertUpdatedFile(filename, relativePath, shaKey, relativePath, callback)
+function insertUpdatedFile(filename, relativePath, shaKey, direct_download, callback)
 {
 	async.waterfall([
 		//Get Connection from Pool
 		pool.getConnection(callback),
 		//Insert Entry into DB
-		insertFileEntryToDB(filename, relativePath, shaKey, relativePath),
+		insertFileEntryToDB(filename, relativePath, shaKey, direct_download),
 		], function(err, data, cb)
 		{
 			if(err)
 			{
 				console.log("Failed to insert new file reference into database. Retrying...");
-				insertUpdatedFile(filename, relativePath, shaKey, relativePath, callback);
+				insertUpdatedFile(filename, relativePath, shaKey, direct_download, callback);
 			}
 			else
 			{
-				console.log(data);
+				cb(null, data);
 			}
 		});
 }
 
 //===================HELPER FUNCTIONS======================//
-function insertFileEntryToDB(filename, relativePath, shaKey, relativePath, err, con, callback)
+function insertFileEntryToDB(filename, relativePath, shaKey, direct_download, err, con, callback)
 {
 	if(err)
 	{
@@ -73,7 +73,7 @@ function insertFileEntryToDB(filename, relativePath, shaKey, relativePath, err, 
 	}
 	else
 	{
-		con.query(insertUpdatedFileQuery, [filename, relativePath, shaKey, relativePath], function(err, result)
+		con.query(insertUpdatedFileQuery, [filename, relativePath, shaKey, direct_download], function(err, result)
 		{
 			con.release();
 			if(err)
